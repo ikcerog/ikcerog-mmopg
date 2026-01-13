@@ -11,34 +11,52 @@ export class World {
 
         // Initialize texture generator
         this.textureGen = new TextureGenerator();
-        this.textures = this.createTextures();
+        this.textures = null; // Will be created async
     }
 
-    createTextures() {
-        return {
-            terrain: this.textureGen.createTerrainTexture(512),
-            terrainNormal: this.textureGen.createTerrainNormalMap(512),
-            metal: this.textureGen.createMetalTexture(0x8b7355, 256),
-            brass: this.textureGen.createBrassTexture(256),
-            wood: this.textureGen.createWoodTexture(256),
-            stone: this.textureGen.createStoneTexture(256),
-            darkMetal: this.textureGen.createMetalTexture(0x4a4a4a, 256),
-            roughness: this.textureGen.createRoughnessMap(256, 0.8)
+    async createTextures() {
+        console.log('Creating procedural textures...');
+
+        // Create textures with smaller sizes for better performance
+        const textures = {
+            terrain: this.textureGen.createTerrainTexture(256),
+            terrainNormal: this.textureGen.createTerrainNormalMap(256),
+            metal: this.textureGen.createMetalTexture(0x8b7355, 128),
+            brass: this.textureGen.createBrassTexture(128),
+            wood: this.textureGen.createWoodTexture(128),
+            stone: this.textureGen.createStoneTexture(128),
+            darkMetal: this.textureGen.createMetalTexture(0x4a4a4a, 128),
+            roughness: this.textureGen.createRoughnessMap(128, 0.8)
         };
+
+        console.log('Textures created successfully');
+        return textures;
     }
 
     async generate() {
-        // Generate terrain chunks
-        for (let x = 0; x < this.worldSize; x++) {
-            for (let z = 0; z < this.worldSize; z++) {
-                const chunkX = (x - this.worldSize / 2) * this.chunkSize;
-                const chunkZ = (z - this.worldSize / 2) * this.chunkSize;
-                this.createChunk(chunkX, chunkZ);
-            }
-        }
+        try {
+            // Create textures first
+            console.log('Starting world generation...');
+            this.textures = await this.createTextures();
 
-        // Add steampunk structures
-        this.generateSteampunkStructures();
+            // Generate terrain chunks
+            console.log('Generating terrain chunks...');
+            for (let x = 0; x < this.worldSize; x++) {
+                for (let z = 0; z < this.worldSize; z++) {
+                    const chunkX = (x - this.worldSize / 2) * this.chunkSize;
+                    const chunkZ = (z - this.worldSize / 2) * this.chunkSize;
+                    this.createChunk(chunkX, chunkZ);
+                }
+            }
+
+            // Add steampunk structures
+            console.log('Adding structures...');
+            this.generateSteampunkStructures();
+            console.log('World generation complete!');
+        } catch (error) {
+            console.error('Error generating world:', error);
+            throw error;
+        }
     }
 
     createChunk(offsetX, offsetZ) {
