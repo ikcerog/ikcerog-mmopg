@@ -17,17 +17,32 @@ export class World {
     async createTextures() {
         console.log('Creating procedural textures...');
 
-        // Create textures with smaller sizes for better performance
-        const textures = {
-            terrain: this.textureGen.createTerrainTexture(256),
-            terrainNormal: this.textureGen.createTerrainNormalMap(256),
-            metal: this.textureGen.createMetalTexture(0x8b7355, 128),
-            brass: this.textureGen.createBrassTexture(128),
-            wood: this.textureGen.createWoodTexture(128),
-            stone: this.textureGen.createStoneTexture(128),
-            darkMetal: this.textureGen.createMetalTexture(0x4a4a4a, 128),
-            roughness: this.textureGen.createRoughnessMap(128, 0.8)
-        };
+        // Create textures one at a time, yielding to allow UI updates
+        const textures = {};
+
+        textures.terrain = this.textureGen.createTerrainTexture(256);
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        textures.terrainNormal = this.textureGen.createTerrainNormalMap(256);
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        textures.metal = this.textureGen.createMetalTexture(0x8b7355, 128);
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        textures.brass = this.textureGen.createBrassTexture(128);
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        textures.wood = this.textureGen.createWoodTexture(128);
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        textures.stone = this.textureGen.createStoneTexture(128);
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        textures.darkMetal = this.textureGen.createMetalTexture(0x4a4a4a, 128);
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        textures.roughness = this.textureGen.createRoughnessMap(128, 0.8);
+        await new Promise(resolve => setTimeout(resolve, 0));
 
         console.log('Textures created successfully');
         return textures;
