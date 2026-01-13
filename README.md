@@ -2,6 +2,8 @@
 
 A multi-square-kilometer open-world steampunk adventure with 20 interactive NPCs featuring full voice dialog and comprehensive controller support.
 
+**🎮 [Play Now on GitHub Pages](https://ikcerog.github.io/ikcerog-mmopg/)**
+
 ## Features
 
 - **Massive Open World**: 4 sq km (2km x 2km) procedurally-varied terrain
@@ -19,13 +21,37 @@ A multi-square-kilometer open-world steampunk adventure with 20 interactive NPCs
 npm install
 ```
 
-## Running the Game
+## Running Locally
 
 ```bash
 npm run dev
 ```
 
-Then open your browser to `http://localhost:5173`
+Then open your browser to `http://localhost:3000`
+
+## Deploying to GitHub Pages
+
+The project is configured for automatic deployment to GitHub Pages.
+
+### Option 1: Automatic Deployment (Recommended)
+
+1. Push your changes to the `main` or `master` branch
+2. GitHub Actions will automatically build and deploy
+3. Game will be live at `https://ikcerog.github.io/ikcerog-mmopg/`
+
+### Option 2: Manual Deployment
+
+```bash
+npm run build
+# Then commit and push the dist folder or use gh-pages branch
+```
+
+### Enable GitHub Pages
+
+1. Go to your repository settings on GitHub
+2. Navigate to **Pages** under "Code and automation"
+3. Set **Source** to "GitHub Actions"
+4. The workflow will deploy automatically on push
 
 ## Controls
 
