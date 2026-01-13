@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { TextureGenerator } from './TextureGenerator.js';
 
 export class World {
     constructor(scene) {
@@ -7,6 +8,23 @@ export class World {
         this.chunkSize = 500; // meters per chunk
         this.worldSize = 4; // 4x4 chunks = 2km x 2km = 4 sq km
         this.structures = [];
+
+        // Initialize texture generator
+        this.textureGen = new TextureGenerator();
+        this.textures = this.createTextures();
+    }
+
+    createTextures() {
+        return {
+            terrain: this.textureGen.createTerrainTexture(512),
+            terrainNormal: this.textureGen.createTerrainNormalMap(512),
+            metal: this.textureGen.createMetalTexture(0x8b7355, 256),
+            brass: this.textureGen.createBrassTexture(256),
+            wood: this.textureGen.createWoodTexture(256),
+            stone: this.textureGen.createStoneTexture(256),
+            darkMetal: this.textureGen.createMetalTexture(0x4a4a4a, 256),
+            roughness: this.textureGen.createRoughnessMap(256, 0.8)
+        };
     }
 
     async generate() {
@@ -42,9 +60,11 @@ export class World {
         }
         geometry.computeVertexNormals();
 
-        // Steampunk-themed terrain material
+        // Steampunk-themed terrain material with procedural textures
         const material = new THREE.MeshStandardMaterial({
-            color: 0x8b7355,
+            map: this.textures.terrain,
+            normalMap: this.textures.terrainNormal,
+            normalScale: new THREE.Vector2(0.5, 0.5),
             roughness: 0.9,
             metalness: 0.1,
             flatShading: false
@@ -105,9 +125,11 @@ export class World {
         // Tower base
         const baseGeometry = new THREE.BoxGeometry(15, 40, 15);
         const baseMaterial = new THREE.MeshStandardMaterial({
-            color: 0x6b4423,
-            metalness: 0.3,
-            roughness: 0.7
+            map: this.textures.stone,
+            roughnessMap: this.textures.roughness,
+            color: 0x9b7355,
+            metalness: 0.2,
+            roughness: 0.8
         });
         const base = new THREE.Mesh(baseGeometry, baseMaterial);
         base.position.y = 20;
@@ -118,9 +140,10 @@ export class World {
         // Clock face
         const clockGeometry = new THREE.CylinderGeometry(6, 6, 2, 32);
         const clockMaterial = new THREE.MeshStandardMaterial({
+            map: this.textures.brass,
             color: 0xffd700,
             metalness: 0.8,
-            roughness: 0.2
+            roughness: 0.3
         });
         const clock = new THREE.Mesh(clockGeometry, clockMaterial);
         clock.rotation.x = Math.PI / 2;
@@ -131,9 +154,10 @@ export class World {
         // Spire
         const spireGeometry = new THREE.ConeGeometry(5, 15, 8);
         const spireMaterial = new THREE.MeshStandardMaterial({
-            color: 0x8b6914,
+            map: this.textures.brass,
+            color: 0xa07920,
             metalness: 0.7,
-            roughness: 0.3
+            roughness: 0.4
         });
         const spire = new THREE.Mesh(spireGeometry, spireMaterial);
         spire.position.y = 47;
@@ -151,9 +175,11 @@ export class World {
         // Main building
         const buildingGeometry = new THREE.BoxGeometry(30, 25, 20);
         const buildingMaterial = new THREE.MeshStandardMaterial({
-            color: 0x4a4a4a,
-            metalness: 0.5,
-            roughness: 0.6
+            map: this.textures.darkMetal,
+            roughnessMap: this.textures.roughness,
+            color: 0x5a5a5a,
+            metalness: 0.4,
+            roughness: 0.7
         });
         const building = new THREE.Mesh(buildingGeometry, buildingMaterial);
         building.position.y = 12.5;
@@ -165,9 +191,10 @@ export class World {
         for (let i = 0; i < 3; i++) {
             const stackGeometry = new THREE.CylinderGeometry(2, 2.5, 20, 16);
             const stackMaterial = new THREE.MeshStandardMaterial({
-                color: 0x2a2a2a,
-                metalness: 0.7,
-                roughness: 0.4
+                map: this.textures.darkMetal,
+                color: 0x3a3a3a,
+                metalness: 0.6,
+                roughness: 0.5
             });
             const stack = new THREE.Mesh(stackGeometry, stackMaterial);
             stack.position.set((i - 1) * 8, 35, 0);
@@ -185,9 +212,10 @@ export class World {
 
         const pipeGeometry = new THREE.CylinderGeometry(1.5, 1.5, 30, 16);
         const pipeMaterial = new THREE.MeshStandardMaterial({
-            color: 0x8b7355,
-            metalness: 0.8,
-            roughness: 0.3
+            map: this.textures.metal,
+            color: 0x9b8365,
+            metalness: 0.7,
+            roughness: 0.4
         });
 
         const pipe1 = new THREE.Mesh(pipeGeometry, pipeMaterial);
@@ -199,9 +227,10 @@ export class World {
         // Valve
         const valveGeometry = new THREE.TorusGeometry(2, 0.5, 16, 32);
         const valveMaterial = new THREE.MeshStandardMaterial({
-            color: 0xff6600,
-            metalness: 0.9,
-            roughness: 0.2
+            map: this.textures.brass,
+            color: 0xff7722,
+            metalness: 0.8,
+            roughness: 0.3
         });
         const valve = new THREE.Mesh(valveGeometry, valveMaterial);
         valve.rotation.y = Math.PI / 2;
@@ -220,9 +249,10 @@ export class World {
         // Large gear
         const gearGeometry = new THREE.CylinderGeometry(8, 8, 3, 12);
         const gearMaterial = new THREE.MeshStandardMaterial({
-            color: 0xb87333,
-            metalness: 0.9,
-            roughness: 0.2
+            map: this.textures.brass,
+            color: 0xc88343,
+            metalness: 0.8,
+            roughness: 0.3
         });
         const gear = new THREE.Mesh(gearGeometry, gearMaterial);
         gear.position.y = 10;
@@ -247,9 +277,10 @@ export class World {
         // Support pillar
         const pillarGeometry = new THREE.CylinderGeometry(2, 2, 10, 16);
         const pillarMaterial = new THREE.MeshStandardMaterial({
-            color: 0x4a4a4a,
-            metalness: 0.6,
-            roughness: 0.5
+            map: this.textures.darkMetal,
+            color: 0x5a5a5a,
+            metalness: 0.5,
+            roughness: 0.6
         });
         const pillar = new THREE.Mesh(pillarGeometry, pillarMaterial);
         pillar.position.y = 5;
@@ -265,8 +296,11 @@ export class World {
         const propCount = 100;
         const crate = new THREE.BoxGeometry(3, 3, 3);
         const crateMaterial = new THREE.MeshStandardMaterial({
-            color: 0x8b4513,
-            roughness: 0.9
+            map: this.textures.wood,
+            roughnessMap: this.textures.roughness,
+            color: 0x9b5523,
+            roughness: 0.95,
+            metalness: 0.0
         });
 
         for (let i = 0; i < propCount; i++) {
