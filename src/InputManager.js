@@ -70,8 +70,8 @@ export class InputManager {
         let z = 0;
 
         // Keyboard input
-        if (this.keys['KeyW'] || this.keys['ArrowUp']) z -= 1;
-        if (this.keys['KeyS'] || this.keys['ArrowDown']) z += 1;
+        if (this.keys['KeyW'] || this.keys['ArrowUp']) z += 1;
+        if (this.keys['KeyS'] || this.keys['ArrowDown']) z -= 1;
         if (this.keys['KeyA'] || this.keys['ArrowLeft']) x -= 1;
         if (this.keys['KeyD'] || this.keys['ArrowRight']) x += 1;
 
