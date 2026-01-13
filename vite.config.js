@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
-export default defineConfig({
-  base: '/ikcerog-mmopg/',
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/ikcerog-mmopg/' : '/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -15,4 +15,4 @@ export default defineConfig({
   server: {
     port: 3000
   }
-});
+}));
